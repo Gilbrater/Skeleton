@@ -1,0 +1,73 @@
+version: '3'
+services:
+  flyway:
+    image: flyway/flyway:latest
+    container_name: draft-flyway
+    command: -url=jdbc:postgresql://postgres:5432/db-name -user=developer -password=password -connectRetries=60 migrate
+    volumes:
+      - ${PWD}/service/src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      - postgres
+#  flyway:
+#    image: boxfuse/flyway:5.2.4
+#    command: -url=jdbc:postgresql://postgres:5432/db-name -schemas=public -user=developer -password=password -connectRetries=60 migrate
+#    volumes:
+#      - ${PWD}/service/src/main/resources/db/migration:/flyway/sql
+#    depends_on:
+#      - postgres
+#  postgres:
+#    image: postgres:12.2
+#    container_name: draft-postgres
+#    restart: always
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - draft-postgres-data:/var/lib/postgresql/data
+#    environment:
+#      - POSTGRES_USER=username
+#      - POSTGRES_PASSWORD=p@ssword
+#      - POSTGRES_DB=db_name
+  postgres:
+    restart: always
+    container_name: draft-postgres
+    image: sameersbn/postgresql:12-20200524
+    ports:
+      - "5432:5432"
+    environment:
+      - DEBUG=false
+      - DB_USER=developer
+      - DB_PASS=password
+      - DB_NAME=db-name
+
+    volumes:
+      - draft-postgresql-data:/var/lib/postgres/data
+
+#  my-mongodb:
+#    image: mongo:latest
+#    container_name: draft-mongodb
+#    ports:
+#      - 27017:27017
+#    environment:
+#      - MONGO_INITDB_DATABASE=draft
+#      - MONGO_INITDB_ROOT_USERNAME=admin
+#      - MONGO_INITDB_ROOT_PASSWORD=admin
+#    volumes:
+#      - draft-mongodb-data:/var/lib/mongodb/data
+#  redis:
+#    image: "bitnami/redis:latest"
+#    container_name: draft-redis
+#    ports:
+#      - "6379:6379"
+#    environment:
+#      - ALLOW_EMPTY_PASSWORD=yes
+#    volumes:
+#      - draft-redis-data:/var/lib/redis/data
+#  cassandra:
+#    image: "cassandra:3.0"
+#    ports:
+#      - "9042:9042"
+
+volumes:
+  draft-postgresql-data:
+  draft-mongodb-data:
+  draft-redis-data:
